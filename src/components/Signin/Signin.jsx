@@ -1,24 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie"; // Import js-cookie
 
 import appLogo from "../../assets/P-Chat.png";
 
-const sendSignInRequest = async (email, password) => {
-  const response = await fetch("https://localhost:7189/api/Users/signin", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
-  const data = await response.json();
-
-  return data;
-};
-
 const Signin = (props) => {
-  const { setSignedIn, setJwtToken, setId, baseUrl } = props;
+  const { setSignedIn, setJwtToken, setId, baseUrl, id } = props;
 
+  const sendSignInRequest = async (email, password) => {
+    const response = await fetch("https://localhost:7189/api/Users/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      Cookies.set("jwtToken", data.tokenString, { expires: 7 });
+      localStorage.setItem("pch-id", data.userId);
+      setJwtToken(data.tokenString);
+      setSignedIn(true);
+
+      window.location.href = baseUrl + "home";
+    }
+    return data;
+  };
   return (
     <>
       <div className="flex min-h-full max-w-xl flex-1 flex-col justify-center px-6 py-12 lg:px-8  shadow-2xl ring ring-slate-50  rounded-xl text-center mx-auto my-9">
@@ -85,6 +92,7 @@ const Signin = (props) => {
                   console.log(data);
                   Cookies.set("jwtToken", data.tokenString, { expires: 7 }); // You can adjust the expiration as needed
 
+                  console.log("User ID from API response:", data.userId);
                   setId(data.userId);
 
                   setJwtToken(data.tokenString);
