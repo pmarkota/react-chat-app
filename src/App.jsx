@@ -36,7 +36,7 @@ export default function App() {
                 path="/"
                 element={
                   signedIn ? (
-                    <NotFound />
+                    <NotFound baseUrl={baseUrl} />
                   ) : (
                     <Signin
                       setSignedIn={setSignedIn}
@@ -53,7 +53,7 @@ export default function App() {
                 path="/register"
                 element={
                   signedIn ? (
-                    <NotFound />
+                    <NotFound baseUrl={baseUrl} />
                   ) : (
                     <Register
                       setSignedIn={setSignedIn}
@@ -67,11 +67,21 @@ export default function App() {
               {signedIn && (
                 <Route
                   path="/home"
-                  element={<Home userId={id} baseApiUrl={baseApiUrl} />}
+                  element={
+                    <Home
+                      userId={id}
+                      baseUrl={baseUrl}
+                      baseApiUrl={baseApiUrl}
+                      setSignedIn={setSignedIn}
+                    />
+                  }
                 />
               )}
               {/* NotFound route */}
-              <Route path="/not-found" element={<NotFound />} />
+              <Route
+                path="/not-found"
+                element={<NotFound baseUrl={baseUrl} />}
+              />
             </Routes>
           )}
         </BrowserRouter>
