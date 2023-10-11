@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../NotFound/NotFound.css";
 import pchat from "../../assets/P-Chat.png";
 import Cookies from "js-cookie"; // Import js-cookie
@@ -7,9 +7,11 @@ const NotFound = ({ baseUrl }) => {
   //check if there is 'jwtToken' in the cookies and if there is, redirect to baseUrl + '/home'
   const jwtToken = Cookies.get("jwtToken");
 
-  if (jwtToken) {
-    window.location.href = baseUrl + "home";
-  }
+  useEffect(() => {
+    if (jwtToken) {
+      window.location.href = baseUrl + "home";
+    }
+  }, [jwtToken]);
 
   return (
     <>

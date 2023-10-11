@@ -1,13 +1,21 @@
 // Chatroom.js
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import NewMember from "../NewMember/NewMember";
+import defaultPic from "../../assets/default_pic.jpg";
 
 const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   const [allMessagesForThisRoom, setAllMessagesForThisRoom] = useState([]);
   const [allUserInfo, setAllUserInfo] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(true);
+  const [showAddMemberForm, setShowAddMemberForm] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(""); // Add state for profile picture
 
   const [messageText, setMessageText] = useState(""); // Add state for message input
   const userId = localStorage.getItem("pch-id");
+
+  const onCloseAddMemberForm = () => {
+    setShowAddMemberForm(false);
+  };
   useEffect(() => {
     const fetchMessagesForChatroom = async () => {
       try {
@@ -19,7 +27,7 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
         }
         const data = await response.json();
         setAllMessagesForThisRoom(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
@@ -59,7 +67,9 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   useEffect(() => {
     scrollChatToBottom();
   }, [allMessagesForThisRoom.length]);
-
+  // useEffect(() => {
+  //   console.log(showAddMemberForm);
+  // }, [showAddMemberForm]);
   const handleSendMessage = async () => {
     try {
       const response = await fetch(
@@ -90,12 +100,22 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   return (
     <div>
       <div className="max-w-2xl rounded-2xl bg-violet-100 pl-0 mx-auto h-screen flex flex-col">
-        <div className="bg-slate-600 flex justify-center items-center h-[4rem] rounded-t-2xl">
-          <div className="bg-violet-400 w-fit text-white rounded-xl py-2 px-4 text-lg">
+        <div className="bg-slate-600 flex justify-between items-center h-[4rem] rounded-t-2xl">
+          <div className="bg-violet-400 ml-auto mr-[6rem] w-fit text-white rounded-xl py-2 px-4 text-lg">
             {chatRoomName}
           </div>
+          <div
+            className="bg-white mr-2 text-violet-500 ml-2 siz w-fit hover:text-white rounded-xl py-2 px-4 text-lg transition-all ease-in duration-400 cursor-pointer hover:bg-violet-400"
+            onClick={() => setShowAddMemberForm(true)}
+          >
+            New Member
+          </div>
         </div>
-
+        <NewMember
+          visible={showAddMemberForm}
+          onClose={onCloseAddMemberForm}
+          baseApiUrl={baseApiUrl}
+        />
         <div
           className="flex-1 overflow-y-scroll scrollbar-thin  scrollbar-thumb-gray-400 scrollbar-track-gray-200 pl-2 pr-2 pt-2"
           id="chat-container"
@@ -107,6 +127,7 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
               const user = allUserInfo.find(
                 (info) => info.userId === message.userId
               );
+              console.log(user);
               const isCurrentUser = message.userId == userId;
               return (
                 <div key={message.messageId}>
@@ -115,9 +136,13 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
                       isCurrentUser ? "justify-end" : "justify-start"
                     }`}
                   >
-                    {!isCurrentUser && (
+                    {!isCurrentUser && user && (
                       <img
-                        src={user.profilePicture}
+                        src={
+                          user.profilePicture === ""
+                            ? defaultPic
+                            : user.profilePicture
+                        }
                         alt={user.username}
                         className="w-7 h-7 rounded-full mr-2 self-center ring-2 ring-slate-400 object-cover"
                       />
@@ -138,7 +163,7 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
                         {new Date(message.sentAt).toLocaleString()}
                       </div>
                     </div>
-                    {isCurrentUser && (
+                    {isCurrentUser && user && (
                       <img
                         src={user.profilePicture}
                         alt={user.username}

@@ -13,13 +13,16 @@ const Register = (props) => {
 
   // Handle registration form submission
   const handleRegister = async () => {
-    const response = await fetch("https://localhost:7189/api/Users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, username }),
-    });
+    const response = await fetch(
+      "https://op-chat-api.azurewebsites.net/api/Users/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, username }),
+      }
+    );
     if (response.ok) {
       window.location.href = baseUrl;
     }

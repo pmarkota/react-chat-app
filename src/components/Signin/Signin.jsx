@@ -7,13 +7,16 @@ const Signin = (props) => {
   const { setSignedIn, setJwtToken, setId, baseUrl, id } = props;
 
   const sendSignInRequest = async (email, password) => {
-    const response = await fetch("https://localhost:7189/api/Users/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await fetch(
+      "https://op-chat-api.azurewebsites.net/api/Users/signin",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      }
+    );
     const data = await response.json();
 
     if (response.ok) {
@@ -22,7 +25,7 @@ const Signin = (props) => {
       setJwtToken(data.tokenString);
       setSignedIn(true);
 
-      window.location.href = baseUrl + "home";
+      // window.location.href = baseUrl + "home";
     }
     return data;
   };
