@@ -12,7 +12,7 @@ export default function App() {
   const [showNavbar, setShowNavbar] = useState(false);
   const [id, setId] = useState(0);
   const [chatRoomsCount, setChatRoomsCount] = useState(0);
-  const baseUrl = "https://startling-gecko-b16eec.netlify.app/";
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const baseApiUrl = "https://op-chat-api.azurewebsites.net/";
   const [loading, setLoading] = useState(true); // Add a loading state
   const [onProfile, setOnProfile] = useState(false);

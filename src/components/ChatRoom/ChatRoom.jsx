@@ -1,7 +1,6 @@
 // Chatroom.js
 import React, { useEffect, useState } from "react";
 import NewMember from "../NewMember/NewMember";
-import defaultPic from "../../assets/default_pic.jpg";
 
 const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   const [allMessagesForThisRoom, setAllMessagesForThisRoom] = useState([]);
@@ -9,7 +8,8 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(true);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
   const [profilePicture, setProfilePicture] = useState(""); // Add state for profile picture
-
+  const defaultPic =
+    "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
   const [messageText, setMessageText] = useState(""); // Add state for message input
   const userId = localStorage.getItem("pch-id");
 
@@ -48,13 +48,14 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
         }
         const data = await response.json();
         setAllUserInfo(data);
+
         console.log(data);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
     fetchUserImages();
-  }, []);
+  }, [allMessagesForThisRoom]);
 
   const scrollChatToBottom = () => {
     // Scroll chat to bottom on load and when new messages arrive in the chat container div
@@ -139,7 +140,8 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
                     {!isCurrentUser && user && (
                       <img
                         src={
-                          user.profilePicture === ""
+                          user.profilePicture === "" ||
+                          user.profilePicture === null
                             ? defaultPic
                             : user.profilePicture
                         }
@@ -165,7 +167,12 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
                     </div>
                     {isCurrentUser && user && (
                       <img
-                        src={user.profilePicture}
+                        src={
+                          user.profilePicture === "" ||
+                          user.profilePicture === null
+                            ? defaultPic
+                            : user.profilePicture
+                        }
                         alt={user.username}
                         className="w-6 h-6 rounded-full ml-2 self-center ring-2 ring-violet-600 object-cover"
                       />
@@ -185,7 +192,12 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
           />
           <button
             className="bg-violet-400 text-white rounded-r-lg py-2 px-4"
-            onClick={() => handleSendMessage()}
+            onClick={() => {
+              if (messageText === "") {
+                return;
+              }
+              handleSendMessage();
+            }}
           >
             Send
           </button>
