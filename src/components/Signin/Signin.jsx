@@ -8,7 +8,7 @@ const Signin = (props) => {
 
   const sendSignInRequest = async (email, password) => {
     const response = await fetch(
-      "https://op-chat-api.azurewebsites.net/api/Users/signin",
+      "https://chatappapp.azurewebsites.net/api/Users/signin",
       {
         method: "POST",
         headers: {
@@ -31,14 +31,14 @@ const Signin = (props) => {
   };
   return (
     <>
-      <div className="flex min-h-full max-w-xl flex-1 flex-col justify-center px-6 py-12 lg:px-8  shadow-2xl ring ring-slate-50  rounded-xl text-center mx-auto my-9">
+      <div className="flex flex-col justify-center flex-1 max-w-xl min-h-full px-6 py-12 mx-auto text-center shadow-2xl lg:px-8 ring ring-slate-50 rounded-xl my-9">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            className="mx-auto h-15 w-auto"
+            className="w-auto mx-auto h-15"
             src={appLogo}
             alt="Your Company"
           />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-10 text-2xl font-bold leading-9 tracking-tight text-center text-gray-900">
             Sign in to your account
           </h2>
         </div>
@@ -110,7 +110,7 @@ const Signin = (props) => {
             </div>
           </div>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-10 text-sm text-center text-gray-500">
             Don't have an account yet?{" "}
             <a
               href={baseUrl + "register"}

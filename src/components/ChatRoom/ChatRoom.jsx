@@ -5,17 +5,15 @@ import NewMember from "../NewMember/NewMember";
 const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   const [allMessagesForThisRoom, setAllMessagesForThisRoom] = useState([]);
   const [allUserInfo, setAllUserInfo] = useState([]);
-  const [isLoadingProfilePicture, setIsLoadingProfilePicture] = useState(true);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(""); // Add state for profile picture
   const defaultPic =
     "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
   const [messageText, setMessageText] = useState(""); // Add state for message input
   const userId = localStorage.getItem("pch-id");
-
   const onCloseAddMemberForm = () => {
     setShowAddMemberForm(false);
   };
+  const currentUser = allUserInfo.find((info) => info.userId === userId);
   useEffect(() => {
     const fetchMessagesForChatroom = async () => {
       try {
@@ -46,6 +44,7 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const data = await response.json();
         setAllUserInfo(data);
 
@@ -68,9 +67,6 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
   useEffect(() => {
     scrollChatToBottom();
   }, [allMessagesForThisRoom.length]);
-  // useEffect(() => {
-  //   console.log(showAddMemberForm);
-  // }, [showAddMemberForm]);
   const handleSendMessage = async () => {
     try {
       const response = await fetch(
@@ -128,7 +124,7 @@ const ChatRoom = ({ chatroomId, baseApiUrl, chatRoomName }) => {
               const user = allUserInfo.find(
                 (info) => info.userId === message.userId
               );
-              console.log(user);
+              // console.log(user);
               const isCurrentUser = message.userId == userId;
               return (
                 <div key={message.messageId}>
